@@ -1,0 +1,16 @@
+APP_NAME := app
+
+test:
+	python -m unittest -v tests/unittest
+
+lint:
+	cd app/ && ruff check . --line-length 100 --select E,F,I,B && ruff format . --line-length 100
+	hadolint app/Dockerfile
+	terraform fmt -check -recursive
+	terraform validate
+
+docker-build:
+	docker build -t ${APP_NAME} app/
+
+docker-run:
+	docker run -p 8000:8000 ${APP_NAME}
